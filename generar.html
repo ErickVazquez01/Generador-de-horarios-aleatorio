@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="row-10">
-            
+
             <button type="button" class="btn btn-primary generador" onclick="generaHorario()">Generar horario
                 individual</button>
             <button type="button" class="btn btn-primary generador" onclick="generaHorariosTotal()">Generar
@@ -113,9 +113,10 @@
     <script src="js/horarioGenerado.js"></script>
     <script>
         //document.getElementById('alumnosGenerados').style.visibility = 'hidden';//visible
-        document.getElementById("comboGeneral").style.display='none';
+        document.getElementById("comboGeneral").style.display = 'none';
         //crearTabla();
-        function crearTabla(nomAlumno) {
+        function crearTabla(nomAlumno, semestre) {
+            semestre = parseInt(semestre);
             /*Se crea variables de estructura de tabla*/
             let table = document.createElement('table');
             let caption = document.createElement('caption');
@@ -127,7 +128,7 @@
             table.id = 'tb' + nomAlumno;
             caption.id = 'alumnoCaption';
             caption.className = 'fs-4';
-            caption.innerHTML = nomAlumno;
+            caption.innerHTML = nomAlumno + ' - ' + semestre;
             tbody.className = 'table-group-divider';
             //Se agrega a la tabla como hijo el caption y la barra de titulos de columnas
             table.appendChild(caption);
@@ -169,7 +170,7 @@
                 ['', '', '', '', '', '', '', '', '', '', '', '', ''],
                 ['', '', '', '', '', '', '', '', '', '', '', '', '']
             ];
-            let materiasDeAlumno=[];
+            let materiasDeAlumno = [];
 
             /*método que ayuda a generar el contenido de la tabla
             en este caso genera 5 filas de datos con materias*/
@@ -181,13 +182,31 @@
 
                 //confirmaHorario regresa false si esta ocupado el lugar
                 //aqui se checa que no choque materia
+                //además de verificar si el alumno es de semestre mayor a 9 o no
+                //si es mayor a 9 solo se le dan materias de 8 o 9
+                //si no solo se le da materias de su semestre, uno arriba o uno abajo
+                materiaAsignada[1] = parseInt(materiaAsignada[1]);
+                if (semestre >= 9) {
 
-                while (!confirmaEspacio('1', materiaAsignada[3]) || !confirmaEspacio('2', materiaAsignada[4]) ||
+                    while (materiaAsignada[1] < 8 || !confirmaEspacio('1', materiaAsignada[3]) || !confirmaEspacio('2', materiaAsignada[4]) ||
                         !confirmaEspacio('3', materiaAsignada[5]) ||
                         !confirmaEspacio('4', materiaAsignada[6]) ||
                         !confirmaEspacio('5', materiaAsignada[7]) || materiasDeAlumno.includes(materiaAsignada[0])) {
-                    materiaAsignada = obtenerMateria(numRandom(174));
+                        materiaAsignada = obtenerMateria(numRandom(174));
+                        materiaAsignada[1] = parseInt(materiaAsignada[1]);
+                    }
+                    //console.log('alumno: ' + nomAlumno + ' semestre: ' + semestre + ' materia: ' + materiaAsignada[0] + ' semestre: ' + materiaAsignada[1]);
+
+                } else {
+                    while (checaSemestre(materiaAsignada[1], semestre) || !confirmaEspacio('1', materiaAsignada[3]) || !confirmaEspacio('2', materiaAsignada[4]) ||
+                        !confirmaEspacio('3', materiaAsignada[5]) ||
+                        !confirmaEspacio('4', materiaAsignada[6]) ||
+                        !confirmaEspacio('5', materiaAsignada[7]) || materiasDeAlumno.includes(materiaAsignada[0])) {
+                        materiaAsignada = obtenerMateria(numRandom(174));
+                    }
                 }
+
+
                 //se guarda en arreglo para evitar que se repita la materia
                 materiasDeAlumno.push(materiaAsignada[0]);
 
@@ -221,12 +240,18 @@
                 tbody.appendChild(agregarMateria(tbody, row_2, rd1, rd2, rd3, rd4, rd5, rd6, rd7, rd8));
 
             }
+
             document.getElementById('body').appendChild(table);//agregar tabla a body
             addAlumnoConHorario(nomAlumno);
         }
-
-
-
+        function checaSemestre(materia, semestre) {
+            //verificar que la materia sea igual al semestre, o sea un valor más o un valor menos
+            if (materia == semestre || materia == semestre + 1 || materia == semestre - 1) {
+                return false;
+            } else {
+                return true;
+            }
+        }
 
         function agregarMateria(tbody, row_2, d1, d2, d3, d4, d5, d6, d7, d8) {
             row_2.appendChild(d1);
@@ -253,13 +278,13 @@
                 alert("El alumno " + alumnoAGenerar[0] + " ya cuenta con horario")
             } else {
                 //console.log('Alumno: ' + alumnoHorario + ' Materia: ' + materiaAsignada);
-                if(vacio){
+                if (vacio) {
                     llenarComboAlumnos();
-                    document.getElementById('comboGeneral').style.display='block';
+                    document.getElementById('comboGeneral').style.display = 'block';
                     vacio = false;
                 }
-                
-                crearTabla(alumnoAGenerar[0]);
+
+                crearTabla(alumnoAGenerar[0], alumnoAGenerar[1]);
                 cookieStorage(alumnoAGenerar[0], 1);
                 console.log(alumnoAGenerar[0]);
                 //falta hacer que 0 cambie a uno cuando se genera un horario
@@ -268,7 +293,7 @@
 
         function generaHorariosTotal() {
             llenarComboAlumnos();
-            document.getElementById('comboGeneral').style.display='block';
+            document.getElementById('comboGeneral').style.display = 'block';
             for (let x = 0; x < alumnos.length; x++) {
 
                 let numAlumno = numRandom(30);
@@ -281,7 +306,7 @@
                 //console.log('Alumno: ' + alumnoHorario + ' Materia: ' + materiaAsignada);
 
 
-                crearTabla(alumnoAGenerar[0]);
+                crearTabla(alumnoAGenerar[0], alumnoAGenerar[1]);
                 cookieStorage(alumnoAGenerar[0], 1);
                 //console.log(alumnoAGenerar[0]);
                 //falta hacer que 0 cambie a uno cuando se genera un horario
@@ -312,10 +337,12 @@
             var cod = document.getElementById("comboAlumnos").value;
             //alert(cod);
             //mueve la pantalla hasta la localización del elemento
-            if (document.getElementById('tb'+cod)){
-            window.location.hash = 'tb'+cod;}
-            else{
-            alert('no tiene horario el alumno');}
+            if (document.getElementById('tb' + cod)) {
+                window.location.hash = 'tb' + cod;
+            }
+            else {
+                alert('no tiene horario el alumno');
+            }
 
         }
 

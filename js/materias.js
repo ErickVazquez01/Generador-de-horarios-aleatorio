@@ -177,8 +177,3 @@ const materias = [["Cálculo Diferencial","1","XA","-","09-11","10-11","-","09-1
 function obtenerMateria(id){
     return materias[id];
 }
-
-/*for (let x = 0; x < materias.length; x++) {
-    if (materias[x][7].length > 1 && materias[x][7].length < 5)
-        console.log(materias[x]);
-}*/
