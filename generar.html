@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alumnos</title>
+    <link rel="stylesheet" href="css/styles.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Josefin+Sans&family=Julee&family=Kanit:wght@200&family=Sono:wght@500&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body id="body">
+
+    <div class="container-fluid text-center">
+        <div class="row">
+            <div class="col">
+                <br>
+                <p class="title-1">GENERACIÓN DE HORARIOS</p>
+            </div>
+        </div>
+        <div class="row-10">
+            
+            <button type="button" class="btn btn-primary generador" onclick="generaHorario()">Generar horario
+                individual</button>
+            <button type="button" class="btn btn-primary generador" onclick="generaHorariosTotal()">Generar
+                horarios</button>
+            <br>
+            <form id="comboGeneral">
+                <fieldset>
+                    <center>
+                        <div class="mb-3 col-5">
+                            <label for="disabledSelect" class="form-label">Selecciona alumno a buscar</label>
+                            <select class="form-select" aria-label="Default select example" id="comboAlumnos">
+
+                            </select>
+                        </div>
+                    </center>
+                    <button type="button" class="btn btn-primary" onclick="buscarAlumno()">Buscar</button>
+                </fieldset>
+            </form>
+            <br>
+            <h3>Condensado de horarios generados</h3>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-10">
+
+                <!--<table class="table table-hover caption-top" id="alumnosGenerados">
+                    <caption id="alumnoCaption">Alumno:</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Materia</th>
+                            <th scope="col">Semestre</th>
+                            <th scope="col">Grupo</th>
+                            <th scope="col">Lunes</th>
+                            <th scope="col">Martes</th>
+                            <th scope="col">Miercoles</th>
+                            <th scope="col">Jueves</th>
+                            <th scope="col">Viernes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="table-group-divider" id="tbAlumnos">
+                        <tr>
+                            <th scope="row" id="numero"></th>
+                            <td>
+                                <div id="nombre"></div>
+                            </td>
+                            <td id="semestre"></td>
+                            <td id="horario"></td>
+                        </tr>
+                    </tbody>
+
+                </table>-->
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <div class="container text-center">
+        <div class="row align-items-start">
+            <div class="col">
+
+            </div>
+            <div class="col-7">
+                <div class="col">
+                    <a class="link" href="generar.html">
+                        Limpiar
+                    </a>
+                    <a class="link " href="menu.html">
+                        Regresar
+                    </a>
+                </div>
+            </div>
+            <div class="col">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/alumnos.js"></script>
+    <script src="js/materias.js"></script>
+    <script src="js/horarioGenerado.js"></script>
+    <script>
+        //document.getElementById('alumnosGenerados').style.visibility = 'hidden';//visible
+        document.getElementById("comboGeneral").style.display='none';
+        //crearTabla();
+        function crearTabla(nomAlumno) {
+            /*Se crea variables de estructura de tabla*/
+            let table = document.createElement('table');
+            let caption = document.createElement('caption');
+            let thead = document.createElement('thead');
+            let tbody = document.createElement('tbody');
+
+            /*Se da atributos a la estructura como class o id*/
+            table.className = 'table table-hover caption-top table-striped';
+            table.id = 'tb' + nomAlumno;
+            caption.id = 'alumnoCaption';
+            caption.className = 'fs-4';
+            caption.innerHTML = nomAlumno;
+            tbody.className = 'table-group-divider';
+            //Se agrega a la tabla como hijo el caption y la barra de titulos de columnas
+            table.appendChild(caption);
+            table.appendChild(thead);
+            // A continuación asignan el número de columnas y sus titulos
+            let row_1 = document.createElement('tr');
+            let heading_1 = document.createElement('th');
+            heading_1.innerHTML = "Materia";
+            let heading_2 = document.createElement('th');
+            heading_2.innerHTML = "Semestre";
+            let heading_3 = document.createElement('th');
+            heading_3.innerHTML = "Grupo";
+            let heading_4 = document.createElement('th');
+            heading_4.innerHTML = "Lunes";
+            let heading_5 = document.createElement('th');
+            heading_5.innerHTML = "Martes";
+            let heading_6 = document.createElement('th');
+            heading_6.innerHTML = "Miercoles";
+            let heading_7 = document.createElement('th');
+            heading_7.innerHTML = "Jueves";
+            let heading_8 = document.createElement('th');
+            heading_8.innerHTML = "Viernes";
+            //se agregan las columnas a una fila
+            row_1.appendChild(heading_1);
+            row_1.appendChild(heading_2);
+            row_1.appendChild(heading_3);
+            row_1.appendChild(heading_4);
+            row_1.appendChild(heading_5);
+            row_1.appendChild(heading_6);
+            row_1.appendChild(heading_7);
+            row_1.appendChild(heading_8);
+            thead.appendChild(row_1);
+
+            //arreglo que representa el horario de el alumno
+            intento = [
+                ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+                ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+                ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+                ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+                ['', '', '', '', '', '', '', '', '', '', '', '', '']
+            ];
+            let materiasDeAlumno=[];
+
+            /*método que ayuda a generar el contenido de la tabla
+            en este caso genera 5 filas de datos con materias*/
+            for (let index = 0; index < 5; index++) {
+
+
+                let materiaAsignada;
+                materiaAsignada = obtenerMateria(numRandom(174));//se obtiene información de una materia al azar
+
+                //confirmaHorario regresa false si esta ocupado el lugar
+                //aqui se checa que no choque materia
+
+                while (!confirmaEspacio('1', materiaAsignada[3]) || !confirmaEspacio('2', materiaAsignada[4]) ||
+                        !confirmaEspacio('3', materiaAsignada[5]) ||
+                        !confirmaEspacio('4', materiaAsignada[6]) ||
+                        !confirmaEspacio('5', materiaAsignada[7]) || materiasDeAlumno.includes(materiaAsignada[0])) {
+                    materiaAsignada = obtenerMateria(numRandom(174));
+                }
+                //se guarda en arreglo para evitar que se repita la materia
+                materiasDeAlumno.push(materiaAsignada[0]);
+
+                //guarda datos en arreglo para apartar espacios
+                //['7-9']
+                setHorario('1', materiaAsignada[3]);
+                setHorario('2', materiaAsignada[4]);
+                setHorario('3', materiaAsignada[5]);
+                setHorario('4', materiaAsignada[6]);
+                setHorario('5', materiaAsignada[7]);
+
+
+                table.appendChild(tbody);
+                let row_2 = document.createElement('tr');
+                let rd1 = document.createElement('td');
+                rd1.innerHTML = materiaAsignada[0];
+                let rd2 = document.createElement('td');
+                rd2.innerHTML = materiaAsignada[1];
+                let rd3 = document.createElement('td');
+                rd3.innerHTML = materiaAsignada[2];
+                let rd4 = document.createElement('td');
+                rd4.innerHTML = materiaAsignada[3];
+                let rd5 = document.createElement('td');
+                rd5.innerHTML = materiaAsignada[4];
+                let rd6 = document.createElement('td');
+                rd6.innerHTML = materiaAsignada[5];
+                let rd7 = document.createElement('td');
+                rd7.innerHTML = materiaAsignada[6];
+                let rd8 = document.createElement('td');
+                rd8.innerHTML = materiaAsignada[7];
+                tbody.appendChild(agregarMateria(tbody, row_2, rd1, rd2, rd3, rd4, rd5, rd6, rd7, rd8));
+
+            }
+            document.getElementById('body').appendChild(table);//agregar tabla a body
+            addAlumnoConHorario(nomAlumno);
+        }
+
+
+
+
+        function agregarMateria(tbody, row_2, d1, d2, d3, d4, d5, d6, d7, d8) {
+            row_2.appendChild(d1);
+            row_2.appendChild(d2);
+            row_2.appendChild(d3);
+            row_2.appendChild(d4);
+            row_2.appendChild(d5);
+            row_2.appendChild(d6);
+            row_2.appendChild(d7);
+            row_2.appendChild(d8);
+            return tbody.appendChild(row_2);
+        }
+        /*método para generar num aleatorio*/
+        function numRandom(max) {
+            return Math.floor(Math.random() * max);
+        }
+        //variable para controlar combobox y no se esté llenando a cada rato
+        let vacio = true;
+        /*función principal que se ejecuta para agregar un solo alumno*/
+        function generaHorario() {
+            const numAlumno = numRandom(30);
+            const alumnoAGenerar = obtenerAlumno(numAlumno);
+            if (alumnosConHorario.includes(alumnoAGenerar[0])) {
+                alert("El alumno " + alumnoAGenerar[0] + " ya cuenta con horario")
+            } else {
+                //console.log('Alumno: ' + alumnoHorario + ' Materia: ' + materiaAsignada);
+                if(vacio){
+                    llenarComboAlumnos();
+                    document.getElementById('comboGeneral').style.display='block';
+                    vacio = false;
+                }
+                
+                crearTabla(alumnoAGenerar[0]);
+                cookieStorage(alumnoAGenerar[0], 1);
+                console.log(alumnoAGenerar[0]);
+                //falta hacer que 0 cambie a uno cuando se genera un horario
+            }
+        }
+
+        function generaHorariosTotal() {
+            llenarComboAlumnos();
+            document.getElementById('comboGeneral').style.display='block';
+            for (let x = 0; x < alumnos.length; x++) {
+
+                let numAlumno = numRandom(30);
+                let alumnoAGenerar = obtenerAlumno(numAlumno);
+
+                while (alumnosConHorario.includes(alumnoAGenerar[0])) {
+                    numAlumno = numRandom(30);
+                    alumnoAGenerar = obtenerAlumno(numAlumno);
+                }
+                //console.log('Alumno: ' + alumnoHorario + ' Materia: ' + materiaAsignada);
+
+
+                crearTabla(alumnoAGenerar[0]);
+                cookieStorage(alumnoAGenerar[0], 1);
+                //console.log(alumnoAGenerar[0]);
+                //falta hacer que 0 cambie a uno cuando se genera un horario
+
+            }
+
+        }
+        //metodo para guardar datos de cada alumno con horario en navegador y no repetirlo
+        function cookieStorage(name, value) {
+            sessionStorage.setItem(name, value);//agrega dato de manera local en navegador
+            //sessionStorage.clear();//limpia todo
+        }
+        //método para llenar ComboBox con nombres de alumnos
+        function llenarComboAlumnos(alumno) {
+            var combo = document.getElementById("comboAlumnos");
+            for (let x = 0; x < alumnos.length; x++) {
+                var option = document.createElement('option');
+                // añadir el elemento option y sus valores
+                combo.options.add(option, x);
+                combo.options[x].value = alumnos[x][0];
+                combo.options[x].innerText = alumnos[x][0];
+
+            }
+        }
+
+        //metodo para buscar posición de alumno con horario
+        function buscarAlumno() {
+            var cod = document.getElementById("comboAlumnos").value;
+            //alert(cod);
+            //mueve la pantalla hasta la localización del elemento
+            if (document.getElementById('tb'+cod)){
+            window.location.hash = 'tb'+cod;}
+            else{
+            alert('no tiene horario el alumno');}
+
+        }
+
+
+
+
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+        </script>
+
+</body>
+
+</html>
